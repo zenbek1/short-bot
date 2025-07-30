@@ -2,27 +2,25 @@ from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
 import yfinance as yf
 
-TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
+TOKEN = "ТВОЙ_ТОКЕН_ОТ_БОТА"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Используй /shortlist для получения списка акций.")
+    await update.message.reply_text("Привет! Используй /shortlist чтобы получить акции для шорта.")
 
 async def shortlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
     tickers = ["GME", "AMC", "BB", "PLTR"]
-    messages = []
+    text = "📉 Акции для шорта:\n"
+
     for ticker in tickers:
         stock = yf.Ticker(ticker)
-        info = stock.info
-        price = info.get('regularMarketPrice')
-        change = info.get('regularMarketChangePercent')
-        messages.append(f"{ticker}: Цена ${price}, Изменение {change:.2f}%")
-    text = "📉 Акции для шорта:\n" + "\n".join(messages)
+        price = stock.info.get("regularMarketPrice", "N/A")
+        change = stock.info.get("regularMarketChangePercent", 0)
+        text += f"{ticker}: ${price} ({change:.2f}%)\n"
+
     await update.message.reply_text(text)
 
 if __name__ == '__main__':
     app = ApplicationBuilder().token(TOKEN).build()
-
     app.add_handler(CommandHandler("start", start))
     app.add_handler(CommandHandler("shortlist", shortlist))
-
     app.run_polling()
