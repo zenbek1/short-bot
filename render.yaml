@@ -1,10 +1,9 @@
 services:
   - type: web
-    name: telegram-short-bot
+    name: telegram-bot
     env: python
     buildCommand: ""
     startCommand: python bot.py
     envVars:
-      - key: TELEGRAM_BOT_TOKEN
+      - key: TOKEN
         value: 8461610744:AAGhqcrnJBj9nPuCSHx2oE7ZuMezycJ9Uow
-        
