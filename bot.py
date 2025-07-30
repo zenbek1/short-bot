@@ -1,25 +1,21 @@
 from telegram import Update
 from telegram.ext import ApplicationBuilder, CommandHandler, ContextTypes
-
 import yfinance as yf
 
-TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"  # <-- вставь сюда свой токен
+TOKEN = "YOUR_TELEGRAM_BOT_TOKEN"
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    await update.message.reply_text("Привет! Я бот, который показывает акции для шорта. Используй команду /shortlist")
+    await update.message.reply_text("Привет! Используй /shortlist для получения списка акций.")
 
 async def shortlist(update: Update, context: ContextTypes.DEFAULT_TYPE):
-    # Пример: получаем данные для нескольких акций и отправляем краткий список
-    tickers = ["GME", "AMC", "BB", "PLTR"]  # примеры популярных шортовых акций
+    tickers = ["GME", "AMC", "BB", "PLTR"]
     messages = []
-
     for ticker in tickers:
         stock = yf.Ticker(ticker)
         info = stock.info
         price = info.get('regularMarketPrice')
         change = info.get('regularMarketChangePercent')
-        messages.append(f"{ticker}: Цена: ${price}, Изменение: {change:.2f}%")
-
+        messages.append(f"{ticker}: Цена ${price}, Изменение {change:.2f}%")
     text = "📉 Акции для шорта:\n" + "\n".join(messages)
     await update.message.reply_text(text)
 
